@@ -1,5 +1,5 @@
 /**
- * \brief musical metronome for linux
+ * \brief metronome for music applications
  */
 #ifndef METRO_H_INCLUDED
 #define METRO_H_INCLUDED

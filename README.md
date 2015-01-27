@@ -1,2 +1,2 @@
 # metro
-linux metronome
+metronome suitable for music applications
