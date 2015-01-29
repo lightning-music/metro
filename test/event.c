@@ -1,10 +1,10 @@
 #include <check.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "metro/event.h"
 #include "metro/thread.h"
+#include "metro/time.h"
 
 void *
 thread_event_signal(void *arg)
@@ -12,7 +12,7 @@ thread_event_signal(void *arg)
     Event e;
     e = (Event) arg;
     ck_assert(e);
-    usleep(1000);
+    Time_usleep(1000);
     Event_signal(e, NULL);
     return NULL;
 }
