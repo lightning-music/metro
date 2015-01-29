@@ -1,11 +1,23 @@
 #include <check.h>
 #include <metro/event.h>
+#include <metro/thread.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 START_TEST(test_Event_init)
 {
     Event e = Event_init();
     ck_assert(e);
+    Event_free(&e);
+}
+END_TEST
+
+START_TEST(test_Event_wait)
+{
+    Event e = Event_init();
+    ck_assert(e);
+    
+    Event_free(&e);
 }
 END_TEST
 
@@ -13,11 +25,19 @@ Suite *
 event_suite(void)
 {
     Suite *suite;
-    TCase *tcase;
+    TCase *tcase_init;
+    TCase *tcase_wait;
     suite = suite_create("Event");
-    tcase = tcase_create("Event_init");
-    tcase_add_test(tcase, test_Event_init);
-    suite_add_tcase(suite, tcase);
+
+    tcase_init = tcase_create("Event_init");
+    tcase_add_test(tcase_init, test_Event_init);
+
+    tcase_wait = tcase_create("Event_wait");
+    tcase_add_test(tcase_wait, test_Event_wait);
+
+    suite_add_tcase(suite, tcase_init);
+    suite_add_tcase(suite, tcase_wait);
+
     return suite;
 }
 
