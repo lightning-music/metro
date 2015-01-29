@@ -7,14 +7,20 @@ OS := $(shell uname -s)
 
 LIBMETRO_AR=libmetro.a
 
-OBJS := mem.o                  \
-        metro.o
+# Get the list of object files to compile,
+# some are platform-agnostic and some are not.
+
+OBJS_GENERIC := mem.o
+OBJS_PLATFORM := metro.o
 
 ifeq ($(OS),Darwin)
-OBJS := $(addprefix $(MAC_DIR)/,$(OBJS))
+PLATFORM_DIR := $(MAC_DIR)
 else
-OBJS := $(addprefix $(POSIX_DIR)/,$(OBJS))
+PLATFORM_DIR := $(POSIX_DIR)
 endif
+OBJS_PLATFORM := $(addprefix $(PLATFORM_DIR)/,$(OBJS_PLATFORM))
+
+OBJS := $(OBJS_GENERIC) $(OBJS_PLATFORM)
 
 CPPFLAGS=-I.
 CFLAGS=-Wall -g -O2
