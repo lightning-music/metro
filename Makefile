@@ -10,7 +10,7 @@ LIBMETRO_AR=libmetro.a
 # Get the list of object files to compile,
 # some are platform-agnostic and some are not.
 
-OBJS_GENERIC := event.o mem.o thread.o
+OBJS_GENERIC := event.o mem.o thread.o time.o
 OBJS_PLATFORM := metro.o
 
 ifeq ($(OS),Darwin)

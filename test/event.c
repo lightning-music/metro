@@ -1,9 +1,21 @@
 #include <check.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 #include "metro/event.h"
 #include "metro/thread.h"
+
+void *
+thread_event_signal(void *arg)
+{
+    Event e;
+    e = (Event) arg;
+    ck_assert(e);
+    usleep(1000);
+    Event_signal(e, NULL);
+    return NULL;
+}
 
 START_TEST(test_Event_init)
 {
@@ -17,6 +29,9 @@ START_TEST(test_Event_wait)
 {
     Event e = Event_init();
     ck_assert(e);
+
+    Thread_create(thread_event_signal, e);
+    Event_wait(e);
     
     Event_free(&e);
 }
