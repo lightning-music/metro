@@ -1,8 +1,9 @@
 #include <check.h>
-#include <metro/event.h>
-#include <metro/thread.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#include "metro/event.h"
+#include "metro/thread.h"
 
 START_TEST(test_Event_init)
 {
