@@ -1,3 +1,6 @@
 *~
 libmetro.a
 *.o
+# tests
+test/event
+test/*.dSYM

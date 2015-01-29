@@ -1,5 +1,5 @@
-#include "mem.h"
-#include "metro.h"
+#include "metro/mem.h"
+#include "metro/metro.h"
 
 #include <stddef.h>
 #include <sys/types.h>

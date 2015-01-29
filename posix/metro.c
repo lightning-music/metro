@@ -1,5 +1,5 @@
-#include "mem.h"
-#include "metro.h"
+#include "metro/mem.h"
+#include "metro/metro.h"
 
 #include <signal.h>
 #include <stddef.h>
