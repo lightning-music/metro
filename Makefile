@@ -38,7 +38,8 @@ $(LIBMETRO_AR): $(OBJS)
 	ar rcs $(LIBMETRO_AR) $^
 
 clean:
-	rm -rf $(LIBMETRO_AR) $(OBJS) *~ $(MAC_DIR)/*~ $(POSIX_DIR)/*~
+	rm -rf $(LIBMETRO_AR) $(OBJS) *~ $(MAC_DIR)/*~ $(POSIX_DIR)/*~ \
+        $(TEST_PROGS)
 
 test: $(LIBMETRO_AR) $(TEST_PROGS)
 	@for test in $(TEST_PROGS); do $$test; done
