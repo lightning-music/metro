@@ -11,7 +11,7 @@ struct Thread {
 };
 
 Thread
-Thread_create(ThreadFunction f, ThreadArgument arg)
+Thread_create(ThreadFunction f, void *arg)
 {
     Thread t;
     NEW(t);
@@ -21,6 +21,15 @@ Thread_create(ThreadFunction f, ThreadArgument arg)
         exit(EXIT_FAILURE);
     }
     return t;
+}
+
+int
+Thread_set_scheduling_class(Thread t, SchedulingClass class)
+{
+    switch (class) {
+    case SchedulingClassRealtime:
+        break;
+    }
 }
 
 int

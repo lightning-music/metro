@@ -3,4 +3,6 @@ libmetro.a
 *.o
 # tests
 test/event
-test/*.dSYM
+*.dSYM/
+# examples
+examples/printer
