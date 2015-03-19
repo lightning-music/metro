@@ -30,6 +30,7 @@ Thread_set_scheduling_class(Thread t, SchedulingClass class)
     case SchedulingClassRealtime:
         break;
     }
+    return 0;
 }
 
 int

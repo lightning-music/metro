@@ -1,12 +1,14 @@
 #include "metro/mem.h"
 #include "metro/metro.h"
 
+#include <assert.h>
 #include <signal.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <time.h>
 
 #define TIMER_CREATE_SUCCESS 0
+#define CLOCK_TYPE CLOCK_MONOTONIC
 
 static void
 timer_tick(union sigval arg);
@@ -16,7 +18,7 @@ struct Metro {
 };
 
 Metro
-Metro_create()
+Metro_create(Bpm bpm, MetroFunc f, void *data)
 {
     Metro metro;
     NEW(metro);
@@ -27,7 +29,7 @@ Metro_create()
     tick.sigev_notify_function = timer_tick;
     
     timer_t tid;
-    int rc = timer_create(CLOCK_REALTIME, &tick, &tid);
+    int rc = timer_create(CLOCK_TYPE, &tick, &tid);
 
     if (rc != TIMER_CREATE_SUCCESS) {
         return NULL;
@@ -39,6 +41,8 @@ Metro_create()
 void
 Metro_free(Metro *metro)
 {
+    assert(metro && *metro);
+    FREE(*metro);
 }
 
 static void
