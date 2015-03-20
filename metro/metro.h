@@ -10,6 +10,8 @@ typedef struct Metro *Metro;
 
 typedef float Bpm;
 
+typedef uint64_t Nanoseconds;
+
 typedef void* (*MetroFunc)(void *arg);
 
 /**

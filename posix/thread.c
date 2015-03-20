@@ -26,8 +26,12 @@ Thread_create(ThreadFunction f, void *arg)
 int
 Thread_set_scheduling_class(Thread t, SchedulingClass class)
 {
+    const struct sched_param sp;
+    
     switch (class) {
     case SchedulingClassRealtime:
+        pthread_setschedparam(t->threadId, SCHED_FIFO, &sp);
+        // error if sp.sched_priority is not SCHED_FIFO?
         break;
     }
     return 0;
