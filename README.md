@@ -1,9 +1,30 @@
 # metro
 metronome suitable for music applications
 
+# build
+
+```shell
+$ make
+```
+
+# install
+
+```shell
+$ sudo make install
+```
+
 # usage
 
+### link flag
+
+`-lmetro`
+
+### API
+
 ```c
+
+#include <metro.h>
+
 static void *
 tick(void *data)
 {
