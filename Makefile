@@ -31,7 +31,7 @@ EXAMPLE_PROGS := $(subst .c,,$(EXAMPLE_PROGS))
 # gcc flags
 
 CPPFLAGS=-I.
-CFLAGS=-Wall -g -O2
+CFLAGS=-Wall -g -O2 -pthread
 LDFLAGS=-L.
 LDLIBS=-lcheck -lmetro
 
