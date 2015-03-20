@@ -7,6 +7,9 @@ OS := $(shell uname -s)
 
 LIBMETRO_AR=libmetro.a
 
+HEADERS := metro.h
+SRC_HEADERS := $(addprefix metro/,$(HEADERS))
+
 # Get the list of object files to compile,
 # some are platform-agnostic and some are not.
 
@@ -28,6 +31,14 @@ TEST_PROGS := $(subst .c,,$(TEST_PROGS))
 EXAMPLE_PROGS := $(wildcard examples/*.c)
 EXAMPLE_PROGS := $(subst .c,,$(EXAMPLE_PROGS))
 
+ifeq ($(DESTDIR),)
+DESTDIR=/usr/local/
+endif
+
+LIB_DIR=$(DESTDIR)lib
+INCLUDE_DIR=$(DESTDIR)include
+SHARED_DIR=.shared
+
 # gcc flags
 
 CPPFLAGS=-I.
@@ -36,6 +47,16 @@ LDFLAGS=-L.
 LDLIBS=-lcheck -lmetro
 
 all: $(LIBMETRO_AR)
+
+install: $(LIBMETRO_AR)
+	for h in $(SRC_HEADERS); do rm -f $(INCLUDE_DIR)/$$h; done
+	for h in $(SRC_HEADERS); do cp $$h $(INCLUDE_DIR); done
+	rm -f $(LIB_DIR)/$(LIBMETRO_AR)
+	cp $(LIBMETRO_AR) $(LIB_DIR)
+
+uninstall:
+	for h in $(SRC_HEADERS); do rm -f $(INCLUDE_DIR)/$$h; done
+	rm -f $(LIB_DIR)/$(LIBMETRO_AR)
 
 $(LIBMETRO_AR): $(OBJS)
 	ar rcs $(LIBMETRO_AR) $^
