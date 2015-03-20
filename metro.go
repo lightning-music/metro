@@ -1,9 +1,7 @@
 // golang wrapper for github.com/lightning/metro
 package metro
 
-// #cgo CPPFLAGS: -I.
-// #cgo LDFLAGS: -L. -lmetro
-// #include "metro/metro.h"
+// #include "metro.h"
 import "C"
 import "fmt"
 

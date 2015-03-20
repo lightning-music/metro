@@ -9,7 +9,7 @@
 #define METRO_H_INCLUDED
 
 #include <stdint.h>
-#include "metro/event.h"
+#include "event.h"
 
 typedef struct Metro *Metro;
 
@@ -44,6 +44,9 @@ Metro_stop(Metro metro);
 Bpm
 Metro_set_bpm(Metro metro, Bpm bpm);
 
+/**
+ * Get the event used to fire off metronome ticks.
+ */
 Event
 Metro_tick(Metro metro);
 

@@ -1,10 +1,11 @@
+// +build cgo
 #include <assert.h>
 #include <pthread.h>
 #include <stddef.h>
 #include <time.h>
 
-#include "metro/event.h"
-#include "metro/mem.h"
+#include "event.h"
+#include "mem.h"
 
 typedef enum {
     EventState_NotReady,

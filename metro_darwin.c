@@ -1,7 +1,8 @@
-#include "metro/event.h"
-#include "metro/mem.h"
-#include "metro/metro.h"
-#include "metro/thread.h"
+// +build cgo
+#include "event.h"
+#include "mem.h"
+#include "metro.h"
+#include "thread.h"
 
 #include <assert.h>
 #include <libkern/OSAtomic.h>

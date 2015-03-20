@@ -1,7 +1,8 @@
-#include "metro/event.h"
-#include "metro/mem.h"
-#include "metro/metro.h"
-#include "metro/thread.h"
+// +build cgo
+#include "event.h"
+#include "mem.h"
+#include "metro.h"
+#include "thread.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -21,11 +22,10 @@ extern int errno;
 
 struct Metro {
     Thread thread;
-    MetroFunc f;
-    void *data;
     Bpm bpm;
     Event start;
     Event ready;
+    Event tick;
     char *strerr;
     volatile int go;
     // clock resolution
@@ -39,16 +39,15 @@ static Nanoseconds
 bpm_to_nanos(Bpm bpm);
 
 Metro
-Metro_create(Bpm bpm, MetroFunc f, void *data)
+Metro_create(Bpm bpm)
 {
     Metro metro;
     NEW(metro);
 
     metro->bpm = bpm;
-    metro->f = f;
-    metro->data = data;
     metro->start = Event_init();
     metro->ready = Event_init();
+    metro->tick = Event_init();
     metro->thread = Thread_create(Metro_go, metro);
 
     if (0 != Thread_set_scheduling_class(metro->thread, SCLASS)) {
@@ -93,6 +92,13 @@ Metro_wait(Metro metro)
     return Thread_join(metro->thread);
 }
 
+Event
+Metro_tick(Metro metro)
+{
+    assert(metro);
+    return metro->tick;
+}
+
 void
 Metro_free(Metro *metro)
 {
@@ -115,7 +121,7 @@ Metro_go(void *arg)
         Event_wait(metro->start);
 
         while (metro->go) {
-            metro->f(metro->data);
+            Event_broadcast(metro->tick, NULL);
             // what if the sum is greater than 1 sec?
             // should it be computed modulo 1B and add 1 to tv_sec?
             wait.tv_sec = 0;

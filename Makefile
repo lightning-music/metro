@@ -13,7 +13,7 @@ SRC_HEADERS := $(addprefix metro/,$(HEADERS))
 # Get the list of object files to compile,
 # some are platform-agnostic and some are not.
 
-OBJS_GENERIC := event.o mem.o time.o
+OBJS_GENERIC := event.o mem.o
 OBJS_PLATFORM := metro.o thread.o
 
 ifeq ($(OS),Darwin)

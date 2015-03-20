@@ -1,10 +1,11 @@
+// +build cgo
 #include <assert.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "metro/mem.h"
-#include "metro/thread.h"
+#include "mem.h"
+#include "thread.h"
 
 struct Thread {
     pthread_t threadId;

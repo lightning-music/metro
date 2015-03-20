@@ -1,8 +1,9 @@
+// +build cgo
 #include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "metro/mem.h"
+#include "mem.h"
 
 void *
 mem_alloc(long nbytes,
