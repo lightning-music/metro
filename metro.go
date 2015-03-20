@@ -5,6 +5,7 @@ package metro
 // #cgo LDFLAGS: -L. -lmetro
 // #include "metro/metro.h"
 import "C"
+import "fmt"
 
 type Metro interface {
 	Start() error
@@ -15,23 +16,47 @@ type Metro interface {
 // do we need to cover Metro_free? [bps]
 
 type metro struct {
-	C         chan uint64
+	c         chan uint64
 	handle    C.Metro
 	counter   uint64
 }
 
-func NewMetro(bpm float32) {
+func (self *metro) Start() error {
+	if rc := C.Metro_start(self.handle); rc != 0 {
+		return fmt.Errorf("Could not start metro %d", rc)
+	}
+	return nil
+}
+
+func (self *metro) Stop() error {
+	if rc := C.Metro_stop(self.handle); rc != 0 {
+		return fmt.Errorf("Could not stop metro %d", rc)
+	}
+	return nil
+}
+
+func (self *metro) SetTempo(bpm float32) float32 {
+	return float32(C.Metro_set_bpm(self.handle, C.Bpm(bpm)))
+}
+
+func (self *metro) Ticks() chan uint64 {
+	return self.c
+}
+
+func NewMetro(bpm float32) Metro {
 	m := new(metro)
-	m.C = make(chan uint64)
+	m.c = make(chan uint64)
 	m.handle = C.Metro_create(C.Bpm(bpm))
+	m.counter = 0
 	e := C.Metro_tick(m.handle)
 	go metroTick(m, e)
+	return m
 }
 
 func metroTick(m *metro, e C.Event) {
 	for {
 		C.Event_wait(e)
-		m.C <- m.counter
+		m.c <- m.counter
 		m.counter++
 	}
 }
