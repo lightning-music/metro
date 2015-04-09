@@ -2,6 +2,7 @@
 package metro
 
 // #include "metro.h"
+// #cgo LDFLAGS: -lrt
 import "C"
 import "fmt"
 
