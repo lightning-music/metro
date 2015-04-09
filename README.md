@@ -1,6 +1,8 @@
 # metro
 metronome suitable for music applications
 
+[![Build Status](https://drone.io/github.com/lightning/metro/status.png)](https://drone.io/github.com/lightning/metro/latest)
+
 # build
 
 ```shell
