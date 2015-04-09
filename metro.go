@@ -41,7 +41,7 @@ func (self *metro) Ticks() chan uint64 {
 	return self.c
 }
 
-func NewMetro(bpm float32) Metro {
+func New(bpm float32) Metro {
 	m := new(metro)
 	m.c = make(chan uint64)
 	m.handle = C.Metro_create(C.Bpm(bpm))

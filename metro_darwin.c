@@ -60,7 +60,10 @@ int
 Metro_stop(Metro metro)
 {
     assert(metro);
-    return OSAtomicCompareAndSwapInt(metro->go, 0, &metro->go);
+    // cas returns true if the operation succeeded,
+    // which we want to invert to return 0 if the operation
+    // succeeds
+    return !OSAtomicCompareAndSwapInt(metro->go, 0, &metro->go);
 }
 
 Bpm
