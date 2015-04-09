@@ -2,7 +2,7 @@
 package metro
 
 // #include "metro.h"
-// #cgo LDFLAGS: -lrt
+// #cgo linux LDFLAGS: -lrt
 import "C"
 import "fmt"
 
