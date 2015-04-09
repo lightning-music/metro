@@ -103,10 +103,10 @@ void
 Metro_free(Metro *metro)
 {
     assert(metro && *metro);
-    Event_free(&metro->start);
-    Event_free(&metro->ready);
-    Event_free(&metro->tick);
-    Thread_free(&metro->thread);
+    Event_free(&(*metro)->start);
+    Event_free(&(*metro)->ready);
+    Event_free(&(*metro)->tick);
+    Thread_free(&(*metro)->thread);
     FREE(*metro);
 }
 
