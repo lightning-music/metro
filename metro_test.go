@@ -16,7 +16,7 @@ func TestMetro(t *testing.T) {
 	done := make(chan error)
 	dur1 := time.Duration(125000000)
 	dur2 := time.Duration(166000000)
-	margin := float64(1000000)
+	margin := float64(10000000)
 
 	go func(m Metro) {
 		// expect some ticks
