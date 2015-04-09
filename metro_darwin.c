@@ -13,8 +13,6 @@
 
 struct Metro {
     Thread thread;
-    /* MetroFunc f; */
-    /* void *data; */
     Bpm bpm;
     Event start;
     Event ready;
@@ -93,6 +91,10 @@ void
 Metro_free(Metro *metro)
 {
     assert(metro && *metro);
+    Thread_free(&metro->thread);
+    Event_free(&metro->start);
+    Event_free(&metro->ready);
+    Event_free(&metro->tick);
     FREE(*metro);
 }
 
