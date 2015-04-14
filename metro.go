@@ -1,4 +1,5 @@
-// golang wrapper for github.com/lightning/metro
+// metronome suitable for applications that require
+// the smallest amount of clock jitter possible
 package metro
 
 // #include "metro.h"
@@ -6,18 +7,21 @@ package metro
 import "C"
 import "fmt"
 
+type Pos uint64
+
 type Metro interface {
 	Start() error
 	Stop() error
 	SetTempo(bpm float32) float32
-	Ticks() chan uint64
+	Ticks() chan Pos
 }
+
 // do we need to cover Metro_free? [bps]
 
 type metro struct {
-	c         chan uint64
-	handle    C.Metro
-	counter   uint64
+	c       chan Pos
+	handle  C.Metro
+	counter Pos
 }
 
 func (self *metro) Start() error {
@@ -38,13 +42,13 @@ func (self *metro) SetTempo(bpm float32) float32 {
 	return float32(C.Metro_set_bpm(self.handle, C.Bpm(bpm)))
 }
 
-func (self *metro) Ticks() chan uint64 {
+func (self *metro) Ticks() chan Pos {
 	return self.c
 }
 
 func New(bpm float32) Metro {
 	m := new(metro)
-	m.c = make(chan uint64)
+	m.c = make(chan Pos)
 	m.handle = C.Metro_create(C.Bpm(bpm))
 	m.counter = 0
 	e := C.Metro_tick(m.handle)
