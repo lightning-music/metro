@@ -14,9 +14,9 @@
 struct Metro {
     Thread thread;
     Bpm bpm;
-    Event start;
-    Event ready;
-    Event tick;
+    MetroEvent start;
+    MetroEvent ready;
+    MetroEvent tick;
     volatile int go;
 };
 
@@ -34,9 +34,9 @@ Metro_create(Bpm bpm)
 
     metro->bpm = bpm;
     metro->go = 0;
-    metro->start = Event_init();
-    metro->ready = Event_init();
-    metro->tick = Event_init();
+    metro->start = MetroEvent_init();
+    metro->ready = MetroEvent_init();
+    metro->tick = MetroEvent_init();
     // start the metro
     metro->thread = Thread_create(Metro_go, metro);
     if (0 != Thread_set_scheduling_class(metro->thread, SchedulingClassRealtime)) {
@@ -51,7 +51,7 @@ Metro_start(Metro metro)
 {
     assert(metro);
     metro->go = 1;
-    return Event_signal(metro->start, NULL);
+    return MetroEvent_signal(metro->start, NULL);
 }
 
 int
@@ -80,7 +80,7 @@ Metro_wait(Metro metro)
     return Thread_join(metro->thread);
 }
 
-Event
+MetroEvent
 Metro_tick(Metro metro)
 {
     assert(metro);
@@ -92,9 +92,9 @@ Metro_free(Metro *metro)
 {
     assert(metro && *metro);
     Thread_free(&(*metro)->thread);
-    Event_free(&(*metro)->start);
-    Event_free(&(*metro)->ready);
-    Event_free(&(*metro)->tick);
+    MetroEvent_free(&(*metro)->start);
+    MetroEvent_free(&(*metro)->ready);
+    MetroEvent_free(&(*metro)->tick);
     FREE(*metro);
 }
 
@@ -110,14 +110,14 @@ Metro_go(void *arg)
 
     // main loop
     while (1) {
-        Event_wait(metro->start);
+        MetroEvent_wait(metro->start);
 
         while (metro->go) {
             now = mach_absolute_time();
             wait = bpm_to_abs(ti, metro->bpm);
             mach_wait_until(now + wait);
             /* metro->f(metro->data); */
-            Event_broadcast(metro->tick, NULL);
+            MetroEvent_broadcast(metro->tick, NULL);
         }
     }
 

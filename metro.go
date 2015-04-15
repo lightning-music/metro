@@ -56,9 +56,9 @@ func New(bpm float32) Metro {
 	return m
 }
 
-func metroTick(m *metro, e C.Event) {
+func metroTick(m *metro, e C.MetroEvent) {
 	for {
-		C.Event_wait(e)
+		C.MetroEvent_wait(e)
 		m.c <- m.counter
 		m.counter++
 	}

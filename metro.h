@@ -47,7 +47,7 @@ Metro_set_bpm(Metro metro, Bpm bpm);
 /**
  * Get the event used to fire off metronome ticks.
  */
-Event
+MetroEvent
 Metro_tick(Metro metro);
 
 /**

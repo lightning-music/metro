@@ -1,66 +1,66 @@
 /**
- * Events are used for inter-thread synchronization
- * Event_wait and Event_timedwait will block the calling
- * thread until another thread calls Event_signal or
- * Event_broadcast
+ * MetroEvents are used for inter-thread synchronization
+ * MetroEvent_wait and MetroEvent_timedwait will block the calling
+ * thread until another thread calls MetroEvent_signal or
+ * MetroEvent_broadcast
  */
 #ifndef EVENT_H_INCLUDED
 #define EVENT_H_INCLUDED
 
-typedef struct Event *Event;
+typedef struct MetroEvent *MetroEvent;
 
-Event
-Event_init();
+MetroEvent
+MetroEvent_init();
 
 /**
  * Lock the event's mutex
  */
 int
-Event_lock(Event e);
+MetroEvent_lock(MetroEvent e);
 
 int
-Event_wait(Event e);
+MetroEvent_wait(MetroEvent e);
 
 int
-Event_timedwait(Event e, long ns);
+MetroEvent_timedwait(MetroEvent e, long ns);
 
 /**
  * Signal the event.
  * This function can block for a long time because
- * it uses Mutex_lock to acquire the Event's mutex
+ * it uses Mutex_lock to acquire the MetroEvent's mutex
  */
 int
-Event_signal(Event e, void *value);
+MetroEvent_signal(MetroEvent e, void *value);
 
 /**
  * Signal the event, but use Mutex_trylock
  * to acquire the lock.
  */
 int
-Event_try_signal(Event e, void *value);
+MetroEvent_try_signal(MetroEvent e, void *value);
 
 /**
  * Broadcast the event.
  * This function can block for a long time because
- * it uses Mutex_lock to acquire the Event's mutex
+ * it uses Mutex_lock to acquire the MetroEvent's mutex
  */
 int
-Event_broadcast(Event e, void *value);
+MetroEvent_broadcast(MetroEvent e, void *value);
 
 /**
  * Broadcast the event, but use Mutex_trylock
  * to acquire the lock.
  */
 int
-Event_try_broadcast(Event e, void *value);
+MetroEvent_try_broadcast(MetroEvent e, void *value);
 
 void
-Event_set_value(Event e, void *value);
+MetroEvent_set_value(MetroEvent e, void *value);
 
 void *
-Event_value(Event e);
+MetroEvent_value(MetroEvent e);
 
 void
-Event_free(Event *e);
+MetroEvent_free(MetroEvent *e);
 
 #endif

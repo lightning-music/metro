@@ -8,71 +8,71 @@
 #include "mem.h"
 
 typedef enum {
-    EventState_NotReady,
-    EventState_Ready
-} EventState;
+    MetroEventState_NotReady,
+    MetroEventState_Ready
+} MetroEventState;
 
-struct Event {
+struct MetroEvent {
     void *val;
-    EventState state;
+    MetroEventState state;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
 };
 
-Event
-Event_init()
+MetroEvent
+MetroEvent_init()
 {
-    Event e;
+    MetroEvent e;
     NEW(e);
     pthread_mutex_init(&e->mutex, NULL);
     pthread_cond_init(&e->cond, NULL);
-    e->state = EventState_NotReady;
+    e->state = MetroEventState_NotReady;
     e->val = NULL;
     return e;
 }
 
 int
-Event_lock(Event e)
+MetroEvent_lock(MetroEvent e)
 {
     assert(e);
     return pthread_mutex_lock(&e->mutex);
 }
 
 int
-Event_wait(Event e)
+MetroEvent_wait(MetroEvent e)
 {
     assert(e);
-    e->state = EventState_NotReady;
+    e->state = MetroEventState_NotReady;
     int result = pthread_cond_wait(&e->cond, &e->mutex);
-    if (e->state != EventState_Ready) {
-        return Event_wait(e);
+    if (e->state != MetroEventState_Ready) {
+        return MetroEvent_wait(e);
     } else {
         return result;
     }
 }
 
 int
-Event_timedwait(Event e, long ns)
+MetroEvent_timedwait(MetroEvent e, long ns)
 {
     assert(e);
-    e->state = EventState_NotReady;
+    e->state = MetroEventState_NotReady;
     struct timespec time;
     time.tv_nsec = ns;
     int result = pthread_cond_timedwait(&e->cond, &e->mutex, &time);
-    if (e->state != EventState_Ready) {
-        return Event_timedwait(e, ns);
+    if (e->state != MetroEventState_Ready) {
+        return MetroEvent_timedwait(e, ns);
     } else {
         return result;
     }
 }
 
 int
-Event_signal(Event e, void *value)
+MetroEvent_signal(MetroEvent e, void *value)
 {
     assert(e);
     int fail = pthread_mutex_lock(&e->mutex);
     if (!fail) {
-        e->state = EventState_Ready;
+        e->state = MetroEventState_Ready;
         e->val = value;
         fail = pthread_cond_signal(&e->cond);
         if (!fail) {
@@ -86,12 +86,12 @@ Event_signal(Event e, void *value)
 }
 
 int
-Event_try_signal(Event e, void *value)
+MetroEvent_try_signal(MetroEvent e, void *value)
 {
     assert(e);
     int fail = pthread_mutex_trylock(&e->mutex);
     if (!fail) {
-        e->state = EventState_Ready;
+        e->state = MetroEventState_Ready;
         e->val = value;
         fail = pthread_cond_signal(&e->cond);
         if (!fail) {
@@ -105,12 +105,12 @@ Event_try_signal(Event e, void *value)
 }
 
 int
-Event_broadcast(Event e, void *value)
+MetroEvent_broadcast(MetroEvent e, void *value)
 {
     assert(e);
     int fail = pthread_mutex_lock(&e->mutex);
     if (!fail) {
-        e->state = EventState_Ready;
+        e->state = MetroEventState_Ready;
         e->val = value;
         fail = pthread_cond_broadcast(&e->cond);
         if (!fail) {
@@ -124,12 +124,12 @@ Event_broadcast(Event e, void *value)
 }
 
 int
-Event_try_broadcast(Event e, void *value)
+MetroEvent_try_broadcast(MetroEvent e, void *value)
 {
     assert(e);
     int fail = pthread_mutex_trylock(&e->mutex);
     if (!fail) {
-        e->state = EventState_Ready;
+        e->state = MetroEventState_Ready;
         e->val = value;
         fail = pthread_cond_broadcast(&e->cond);
         if (!fail) {
@@ -143,21 +143,21 @@ Event_try_broadcast(Event e, void *value)
 }
 
 void
-Event_set_value(Event e, void *value)
+MetroEvent_set_value(MetroEvent e, void *value)
 {
     assert(e);
     e->val = value;
 }
 
 void *
-Event_value(Event e)
+MetroEvent_value(MetroEvent e)
 {
     assert(e);
     return e->val;
 }
 
 void
-Event_free(Event *e)
+MetroEvent_free(MetroEvent *e)
 {
     assert(e && *e);
     pthread_mutex_destroy( &(*e)->mutex );

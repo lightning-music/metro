@@ -23,9 +23,9 @@ extern int errno;
 struct Metro {
     Thread thread;
     Bpm bpm;
-    Event start;
-    Event ready;
-    Event tick;
+    MetroEvent start;
+    MetroEvent ready;
+    MetroEvent tick;
     char *strerr;
     volatile int go;
     // clock resolution
@@ -45,16 +45,16 @@ Metro_create(Bpm bpm)
     NEW(metro);
 
     metro->bpm = bpm;
-    metro->start = Event_init();
-    metro->ready = Event_init();
-    metro->tick = Event_init();
+    metro->start = MetroEvent_init();
+    metro->ready = MetroEvent_init();
+    metro->tick = MetroEvent_init();
     metro->thread = Thread_create(Metro_go, metro);
 
     if (0 != Thread_set_scheduling_class(metro->thread, SCLASS)) {
         return NULL;
     }
 
-    Event_wait(metro->ready);
+    MetroEvent_wait(metro->ready);
 
     return metro;
 }
@@ -66,7 +66,7 @@ Metro_start(Metro metro)
     assert(__sync_bool_compare_and_swap(&metro->go, metro->go, 1));
     /* metro->thread = Thread_create(Metro_go, metro); */
     /* return 0; */
-    return Event_broadcast(metro->start, NULL);
+    return MetroEvent_broadcast(metro->start, NULL);
 }
 
 int
@@ -92,7 +92,7 @@ Metro_wait(Metro metro)
     return Thread_join(metro->thread);
 }
 
-Event
+MetroEvent
 Metro_tick(Metro metro)
 {
     assert(metro);
@@ -103,9 +103,9 @@ void
 Metro_free(Metro *metro)
 {
     assert(metro && *metro);
-    Event_free(&(*metro)->start);
-    Event_free(&(*metro)->ready);
-    Event_free(&(*metro)->tick);
+    MetroEvent_free(&(*metro)->start);
+    MetroEvent_free(&(*metro)->ready);
+    MetroEvent_free(&(*metro)->tick);
     Thread_free(&(*metro)->thread);
     FREE(*metro);
 }
@@ -118,13 +118,13 @@ Metro_go(void *arg)
     struct timespec wait;
     struct timespec rem;
 
-    Event_signal(metro->ready, NULL);
+    MetroEvent_signal(metro->ready, NULL);
     
     while (1) {
-        Event_wait(metro->start);
+        MetroEvent_wait(metro->start);
 
         while (metro->go) {
-            Event_broadcast(metro->tick, NULL);
+            MetroEvent_broadcast(metro->tick, NULL);
             // what if the sum is greater than 1 sec?
             // should it be computed modulo 1B and add 1 to tv_sec?
             wait.tv_sec = 0;
