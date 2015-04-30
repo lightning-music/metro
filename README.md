@@ -23,7 +23,9 @@ Look at examples
 
 `-lmetro`
 
-### API
+## API
+
+### C
 
 ```c
 
@@ -56,7 +58,7 @@ if (fail != 0) {
 Metro_free(&metro);
 ```
 
-## Go
+### Go
 
 ```go
 
