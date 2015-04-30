@@ -72,7 +72,7 @@ func main() {
 }
 
 func handleTicks(ticks chan uint64) {
-     for tick := rang ticks {
+     for tick := range ticks {
          fmt.Printf("tick %d\n", tick)
      }
 }
