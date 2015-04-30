@@ -22,7 +22,7 @@ func TestMetro(t *testing.T) {
 		// expect some ticks
 		var start, end time.Time
 		for count := range m.Ticks() {
-			if count == Pos(8) {
+			if count == uint64(8) {
 				end = time.Now()
 				diff := math.Abs(float64(end.Sub(start) - dur1))
 				if diff > margin {
@@ -30,7 +30,7 @@ func TestMetro(t *testing.T) {
 					return
 				}
 				break
-			} else if count > Pos(8) {
+			} else if count > uint64(8) {
 				done <-fmt.Errorf("count should have stopped at 8")
 				return
 			} else {
@@ -45,7 +45,7 @@ func TestMetro(t *testing.T) {
 		}
 		// expect another 4 ticks
 		for count := range m.Ticks() {
-			if count == Pos(16) {
+			if count == uint64(16) {
 				end = time.Now()
 				diff := math.Abs(float64(end.Sub(start) - dur2))
 				if diff > margin {
@@ -53,7 +53,7 @@ func TestMetro(t *testing.T) {
 					return
 				}
 				break
-			} else if count > Pos(16) {
+			} else if count > uint64(16) {
 				done <-fmt.Errorf("count should have stopped at 16")
 				return
 			} else {

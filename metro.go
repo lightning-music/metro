@@ -7,21 +7,19 @@ package metro
 import "C"
 import "fmt"
 
-type Pos uint64
-
 type Metro interface {
 	Start() error
 	Stop() error
 	SetTempo(bpm float32) float32
-	Ticks() chan Pos
+	Ticks() chan uint64
 }
 
 // do we need to cover Metro_free? [bps]
 
 type metro struct {
-	c       chan Pos
+	c       chan uint64
 	handle  C.Metro
-	counter Pos
+	counter uint64
 }
 
 func (self *metro) Start() error {
@@ -42,13 +40,13 @@ func (self *metro) SetTempo(bpm float32) float32 {
 	return float32(C.Metro_set_bpm(self.handle, C.Bpm(bpm)))
 }
 
-func (self *metro) Ticks() chan Pos {
+func (self *metro) Ticks() chan uint64 {
 	return self.c
 }
 
 func New(bpm float32) Metro {
 	m := new(metro)
-	m.c = make(chan Pos)
+	m.c = make(chan uint64)
 	m.handle = C.Metro_create(C.Bpm(bpm))
 	m.counter = 0
 	e := C.Metro_tick(m.handle)
