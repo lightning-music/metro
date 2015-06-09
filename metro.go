@@ -6,6 +6,7 @@ package metro
 // #cgo linux LDFLAGS: -lrt
 import "C"
 import "fmt"
+import "sync/atomic"
 
 type Metro interface {
 	Start() error
@@ -23,6 +24,10 @@ type metro struct {
 }
 
 func (self *metro) Start() error {
+	swapped := atomic.CompareAndSwapUint64(&self.counter, self.counter, uint64(0))
+	if !swapped {
+		return fmt.Errorf("Could not set counter to 0")
+	}
 	if rc := C.Metro_start(self.handle); rc != 0 {
 		return fmt.Errorf("Could not start metro %d", rc)
 	}
@@ -58,6 +63,6 @@ func metroTick(m *metro, e C.MetroEvent) {
 	for {
 		C.MetroEvent_wait(e)
 		m.c <- m.counter
-		m.counter++
+		m.counter = atomic.AddUint64(&m.counter, uint64(1))
 	}
 }
